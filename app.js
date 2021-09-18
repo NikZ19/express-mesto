@@ -1,6 +1,13 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const { celebrate, Joi, errors } = require('celebrate');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const error = require('./middlewares/error');
 
 const { PORT = 3000 } = process.env;
 
@@ -11,17 +18,29 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '613c37c970bffdc4cd81d7cb',
-  };
+app.use(helmet());
 
-  next();
-});
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+  }),
+}), createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+  }),
+}), login);
+
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 app.use('*', require('./routes/notFound'));
+
+app.use(errors());
+app.use(error);
 
 // eslint-disable-next-line no-console
 app.listen(PORT, () => console.log(`Listening port: ${PORT}`));

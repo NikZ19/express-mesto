@@ -47,11 +47,6 @@ module.exports.likeCard = (req, res, next) => {
       }
       return res.status(200).send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      }
-    })
     .catch(next);
 };
 
@@ -62,11 +57,6 @@ module.exports.dislikeCard = (req, res, next) => {
         throw new NotFoundError('Запрашиваемая карточка не найдена');
       }
       return res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      }
     })
     .catch(next);
 };

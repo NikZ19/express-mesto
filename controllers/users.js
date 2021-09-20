@@ -42,11 +42,6 @@ module.exports.getUserById = (req, res, next) => {
       }
       return res.status(200).send({ data: users });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      }
-    })
     .catch(next);
 };
 
@@ -84,11 +79,6 @@ module.exports.updateUser = (req, res, next) => {
       }
       return res.status(200).send({ data: user });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные пользователя');
-      }
-    })
     .catch(next);
 };
 
@@ -105,11 +95,6 @@ module.exports.updateAvatar = (req, res, next) => {
         throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
       return res.status(200).send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError('Некорректная URL-ссылка');
-      }
     })
     .catch(next);
 };

@@ -10,7 +10,14 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
-const cors = require('./middlewares/cors');
+// const cors = require('./middlewares/cors');
+
+const allowedCors = [
+  'localhost:3000',
+  'http://localhost:3000',
+  'http://mesto.nikz.nomoredomains.rocks',
+  'https://mesto.nikz.nomoredomains.rocks',
+];
 
 const { PORT = 3000 } = process.env;
 
@@ -23,8 +30,28 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
 
-app.use(cors);
+// app.use(cors);
 app.use(requestLogger);
+
+app.use((req, res, next) => {
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+  const { origin } = req.headers;
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.status(200).send();
+  }
+
+  return next();
+});
 
 app.get('/crash-test', () => {
   setTimeout(() => {

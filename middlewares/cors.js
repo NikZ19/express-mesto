@@ -1,7 +1,8 @@
 const allowedCors = [
   'http://mesto.nikz.nomoredomains.rocks',
-  'http://mesto.nikz.nomoredomains.rocks',
-  'localhost:3000',
+  'https://mesto.nikz.nomoredomains.rocks',
+  'http://localhost:3000',
+  'https://localhost:3000',
 ];
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 

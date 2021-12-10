@@ -57,13 +57,13 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.status(201).send({ data: { _id: user._id, email: user.email } }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные для создания пользователя');
+        next(new BadRequestError('Переданы некорректные данные для создания пользователя'));
       }
-      if (err.name === 'MongoServerError' && err.code === 11000) {
-        throw new ConflictError('Email занят!');
+      if (err.code === 11000) {
+        next(new ConflictError('Email занят!'));
       }
-    })
-    .catch(next);
+      next(err);
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {

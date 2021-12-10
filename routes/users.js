@@ -19,7 +19,8 @@ router.patch('/me', celebrate({
 }), updateUser);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri().required(),
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().pattern(/^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)(\/[\w\.]*)*\/?$/).required(),
   }),
 }), updateAvatar);
 
